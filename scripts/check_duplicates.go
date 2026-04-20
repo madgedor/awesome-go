@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -63,8 +64,16 @@ func main() {
 	}
 
 	fmt.Printf("Found %d duplicate link(s):\n", len(dupes))
-	for url, lines := range dupes {
-		fmt.Printf("  %s (lines: %v)\n", url, lines)
+
+	// Sort URLs for deterministic output so results are easier to read/diff.
+	urls := make([]string, 0, len(dupes))
+	for url := range dupes {
+		urls = append(urls, url)
+	}
+	sort.Strings(urls)
+
+	for _, url := range urls {
+		fmt.Printf("  %s (lines: %v)\n", url, dupes[url])
 	}
 	os.Exit(1)
 }
