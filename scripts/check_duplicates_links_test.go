@@ -61,3 +61,17 @@ func TestFindCrossSectionDuplicates_None(t *testing.T) {
 		t.Errorf("expected 0 duplicates, got %d", len(duplicates))
 	}
 }
+
+// TestFindCrossSectionDuplicates_MultipleURLs checks that multiple duplicate
+// URLs across sections are all detected correctly.
+func TestFindCrossSectionDuplicates_MultipleURLs(t *testing.T) {
+	sections := map[string][]string{
+		"Web":     {"https://github.com/gin-gonic/gin", "https://github.com/spf13/cobra"},
+		"CLI":     {"https://github.com/spf13/cobra"},
+		"Routers": {"https://github.com/gin-gonic/gin"},
+	}
+	duplicates := findCrossSectionDuplicates(sections)
+	if len(duplicates) != 2 {
+		t.Errorf("expected 2 duplicates, got %d", len(duplicates))
+	}
+}
