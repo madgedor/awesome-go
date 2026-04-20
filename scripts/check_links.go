@@ -50,10 +50,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	client := &http.Client{Timeout: 10 * time.Second}
+	// Increased timeout from 10s to 15s to reduce false positives from slow mirrors
+	client := &http.Client{Timeout: 15 * time.Second}
 	results := make(chan Result, len(links))
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 20)
+	// Reduced concurrency from 20 to 10 to be less aggressive on rate-limited hosts
+	sem := make(chan struct{}, 10)
 
 	for _, link := range links {
 		wg.Add(1)
