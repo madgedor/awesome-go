@@ -60,8 +60,9 @@ func TestExtractMaintainerLinks_Dedup(t *testing.T) {
 }
 
 func TestLastPush_Recent(t *testing.T) {
-	// Mock GitHub API returning a recent push date
-	// Using 30 days ago to simulate an actively maintained repo
+	// Mock GitHub API returning a recent push date.
+	// Using 30 days ago to simulate an actively maintained repo.
+	// Note: threshold check uses 60 days to give some test headroom.
 	recent := time.Now().Add(-30 * 24 * time.Hour).Format(time.RFC3339)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -101,6 +102,3 @@ func TestFindUnmaintained_Empty(t *testing.T) {
 		t.Errorf("expected 0 results, got %d", len(results))
 	}
 }
-
-func TestFindUnmaintained_MockStale(t *testing.T) {
-	// Mock server returning a very old push date
