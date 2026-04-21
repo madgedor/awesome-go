@@ -11,14 +11,14 @@ import (
 )
 
 var sectionHeaderRe = regexp.MustCompile(`^#{1,3} `)
-var listItemRe = regexp.MustCompile(`^[-*] \[(.+?)\]`)
+var listItemRe = regexp.MustCompile(`^[-*] `)
 
 type sectionItems struct {
 	Header string
 	Items  []string
 }
 
-func extractSections(filename string) ([]sectionItems, error) {
+func extractSections(Items, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,11 @@ func extractSections(filename string) ([]sectionItems, error) {
 			current = &sectionItems{Header: line}
 		} else if current != nil {
 			if m := listItemRe.FindStringSubmatch(line); m != nil {
-				current.Items = append(current.Items, strings.ToLower(m[1]))
+				// Strip leading articles ("a ", "an ", "the ") before comparing,
+				// so e.g. "The Foo" sorts alongside "Foo" rather than at the end.
+				name := strings.ToLower(m[1])
+				name = stripArticle(name)
+				current.Items = append(current.Items, name)
 			}
 		}
 	}
@@ -46,6 +50,16 @@ func extractSections(filename string) ([]sectionItems, error) {
 		sections = append(sections, *current)
 	}
 	return sections, scanner.Err()
+}
+
+// stripArticle removes a leading "a ", "an ", or "the " from s.
+func stripArticle(s string) string {
+	for _, article := range []string{"the ", "an ", "a "} {
+		if strings.HasPrefix(s, article) {
+			return strings.TrimPrefix(s, article)
+		}
+	}
+	return s
 }
 
 func findNonAlphabetical(sections []sectionItems) []string {
