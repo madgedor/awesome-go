@@ -70,3 +70,17 @@ func TestFindEmptyCategories_None(t *testing.T) {
 		t.Errorf("expected no empty categories, got %v", empty)
 	}
 }
+
+// TestFindEmptyCategories_AllEmpty verifies that all categories are reported
+// as empty when none of them contain any links.
+func TestFindEmptyCategories_AllEmpty(t *testing.T) {
+	stats := []CategoryStats{
+		{Name: "Audio", Links: 0},
+		{Name: "Video", Links: 0},
+		{Name: "Databases", Links: 0},
+	}
+	empty := findEmptyCategories(stats)
+	if len(empty) != 3 {
+		t.Errorf("expected 3 empty categories, got %v", empty)
+	}
+}
