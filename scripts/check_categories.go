@@ -29,8 +29,7 @@ func extractCategories(filename string) ([]CategoryStats, error) {
 	var current *CategoryStats
 
 	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := scanner.Text()
+	for scannert	line := scanner.Text()
 		if m := categoryRe.FindStringSubmatch(line); m != nil {
 			if current != nil {
 				stats = append(stats, *current)
@@ -68,8 +67,11 @@ func main() {
 	}
 	empty := findEmptyCategories(stats)
 	if len(empty) > 0 {
-", e)
-		tos.Exit(1)
+		fmt.Fprintf(os.Stderr, "empty categories found:\n")
+		for _, e := range empty {
+			fmt  - %s\n", e)
+		}
+		os.Exit(1)
 	}
 	fmt.Println("All categories have at least one link.")
 }
