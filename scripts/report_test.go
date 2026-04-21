@@ -33,6 +33,19 @@ func TestReport_AddEntries(t *testing.T) {
 	}
 }
 
+// TestReport_AddMultipleEntries verifies that adding multiple entries of the
+// same category accumulates correctly rather than overwriting.
+func TestReport_AddMultipleEntries(t *testing.T) {
+	r := newReport()
+	r.AddDead("https://dead1.example.com")
+	r.AddDead("https://dead2.example.com")
+	r.AddDead("https://dead3.example.com")
+
+	if len(r.DeadLinks) != 3 {
+		t.Errorf("expected 3 dead links, got %d", len(r.DeadLinks))
+	}
+}
+
 func TestReport_Save(t *testing.T) {
 	r := newReport()
 	r.TotalLinks = 42
