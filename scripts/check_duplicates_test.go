@@ -73,3 +73,23 @@ func TestFindDuplicates_None(t *testing.T) {
 		t.Fatalf("expected no duplicates, got %d", len(dupes))
 	}
 }
+
+// TestFindDuplicates_MultipleURLs checks that multiple duplicate URLs are all
+// detected correctly in a single pass — useful for larger README files.
+func TestFindDuplicates_MultipleURLs(t *testing.T) {
+	urlLines := map[string][]int{
+		"https://a.com": {1, 4, 9},
+		"https://b.com": {2, 7},
+		"https://c.com": {3},
+	}
+	dupes := findDuplicates(urlLines)
+	if len(dupes) != 2 {
+		t.Fatalf("expected 2 duplicates, got %d", len(dupes))
+	}
+	if _, ok := dupes["https://a.com"]; !ok {
+		t.Error("expected https://a.com to be a duplicate")
+	}
+	if _, ok := dupes["https://b.com"]; !ok {
+		t.Error("expected https://b.com to be a duplicate")
+	}
+}
