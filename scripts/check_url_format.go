@@ -47,6 +47,11 @@ func findMalformedURLs(entries []URLEntry) []URLEntry {
 		if err != nil || u.Host == "" || strings.Contains(e.URL, " ") {
 			bad = append(bad, e)
 		}
+		// Also flag URLs with a trailing slash on the root domain, e.g. https://example.com/
+		// These are technically valid but inconsistent with the style used in awesome-go.
+		if err == nil && u.Path == "/" && u.RawQuery == "" && u.Fragment == "" {
+			bad = append(bad, e)
+		}
 	}
 	return bad
 }
