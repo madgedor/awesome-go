@@ -78,3 +78,17 @@ func TestFindMissingDescriptions_Found(t *testing.T) {
 		t.Errorf("expected Foo, got %s", missing[0].Name)
 	}
 }
+
+// TestFindMissingDescriptions_AllMissing checks that all entries without
+// descriptions are correctly reported when none have descriptions.
+func TestFindMissingDescriptions_AllMissing(t *testing.T) {
+	entries := []LinkEntry{
+		{Name: "Foo", URL: "https://foo.com", Desc: ""},
+		{Name: "Bar", URL: "https://bar.com", Desc: ""},
+		{Name: "Baz", URL: "https://baz.com", Desc: ""},
+	}
+	missing := findMissingDescriptions(entries)
+	if len(missing) != 3 {
+		t.Errorf("expected 3 missing, got %d", len(missing))
+	}
+}
