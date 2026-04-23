@@ -42,14 +42,26 @@ func saveURLReport(r *URLFormatReport, out string) error {
 }
 
 func mainReport() {
+	// Default input file; override by passing a path as the first argument.
 	path := "README.md"
 	if len(os.Args) > 1 {
 		path = os.Args[1]
 	}
+
+	// Default output file; override by passing a path as the second argument.
+	output := "url_format_report.json"
+	if len(os.Args) > 2 {
+		output = os.Args[2]
+	}
+
 	report, err := generateURLReport(path)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
-	if err := saveURLReport(report, "url_format_report.json");("Report saved. Total: %d, Malformed: %d\n", report.Total, len(report.Malformed))
+	if err := saveURLReport(report, output); err != nil {
+		fmt.Fprintf(os.Stderr, "error saving report: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Report saved to %s. Total: %d, Malformed: %d\n", output, report.Total, len(report.Malformed))
 }
