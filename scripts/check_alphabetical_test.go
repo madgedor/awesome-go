@@ -68,3 +68,16 @@ func TestFindNonAlphabetical_MultiSection(t *testing.T) {
 		t.Errorf("expected 1 issue, got %d", len(issues))
 	}
 }
+
+// TestFindNonAlphabetical_EmptySection verifies that sections with no items
+// or only one item do not produce false positives.
+func TestFindNonAlphabetical_EmptySection(t *testing.T) {
+	sections := []sectionItems{
+		{Header: "## Empty", Items: []string{}},
+		{Header: "## Single", Items: []string{"only"}},
+	}
+	issues := findNonAlphabetical(sections)
+	if len(issues) != 0 {
+		t.Errorf("expected no issues for empty/single-item sections, got %v", issues)
+	}
+}
